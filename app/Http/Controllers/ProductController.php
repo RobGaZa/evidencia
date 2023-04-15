@@ -14,7 +14,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('product.index');
+        return view('product.index', [
+            'products'=> Product::all()
+        ]);
     }
 
     /**
@@ -22,9 +24,11 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Product $product)
     {
-        //
+        return view('product.create', [
+            'products'=>$product
+        ]);
     }
 
     /**
@@ -35,7 +39,15 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Product::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'foto' => $request->foto,
+            'precio' => $request->precio,
+            'stock' => $request->stock
+        ]);
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -57,7 +69,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return view('product.edit', [
+            'product'=> $product
+        ]);
     }
 
     /**
@@ -69,7 +83,15 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        Product::whereId($product->id)->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'foto' => $request->foto,
+            'precio' => $request->precio,
+            'stock' => $request->stock,
+        ]);
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -80,6 +102,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return redirect()->route('products.index');
     }
 }
